@@ -92,16 +92,24 @@ Hover zones (`.dh-zone`) are invisible divs that sit above the panels and call `
 
 ### Word rotation
 
-Both mobile and desktop use the same pattern:
+Both mobile and desktop use the same pattern with an **overlapping crossfade** so the transition feels continuous:
 
-1. Add `.fading-out` → word slides up and fades out (`translateY(-100%)`)
-2. Swap `textContent` with transition disabled
-3. Add `.fading-in` → word is below the slot, invisible
-4. Double `requestAnimationFrame` → remove `.fading-in` → word slides up into place
+1. Add `.fading-out` → word slides up 65% and blurs out (`translateY(-65%) + filter:blur(6px)`)
+2. At **300ms** (55% through the 550ms exit) — swap `textContent` while transition is disabled
+3. Add `.fading-in` → word starts below the slot, blurred and invisible
+4. Double `requestAnimationFrame` → remove `.fading-in` → word rises into place, sharpening as it arrives
 
-Each word slot has a **`overflow: hidden` wrapper** so the word clips cleanly within its line and never bleeds into the text above.
+The key detail: swapping at 300ms means the incoming word starts entering **before** the outgoing word has fully left. This overlap is what makes it feel fluid rather than two separate animations.
 
-Desktop rotates on a 3s interval. On desktop the word also changes when hovering a different panel (`PANEL_WORDS = { uti, bladder, menopause }`).
+Each word slot sits inside an **`overflow: hidden` wrapper** so words clip cleanly within their line — no bleeding into the text above.
+
+| Property | Mobile | Desktop |
+|----------|--------|---------|
+| Duration | 550ms | 600ms |
+| Travel | 65% | 65% |
+| Blur | 6px | 8px |
+| Swap at | 300ms | 330ms |
+| Interval | 3.5s | on hover |
 
 ### Key easing
 
