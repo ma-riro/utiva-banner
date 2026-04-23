@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Utiva Banner</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'General Sans', sans-serif;
+      background: #fff;
+      color: #1A1A1A;
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════════════
+       SHARED HEADER
+       ══════════════════════════════════════════ */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+    }
+
+    .announcement-bar {
+      background: #C33635;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      position: relative;
+    }
+    .announcement-bar .close-btn {
+      position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: #fff; cursor: pointer; font-size: 18px; line-height: 1;
+    }
+
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: #fff;
+    }
+    .nav-hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 2px; background: #1A1A1A; border-radius: 2px; }
+
+    .logo {
+      font-size: 22px; font-weight: 700; color: #C33635; text-decoration: none;
+      border: 2px solid #C33635; border-radius: 6px; padding: 2px 10px; letter-spacing: 1px;
+    }
+    .nav-icons { display: flex; align-items: center; gap: 18px; }
+    .nav-icon { width: 22px; height: 22px; color: #1A1A1A; cursor: pointer; }
+    .nav-links-desktop { display: none; }
+    .nav-lang { display: none; }
+
+    /* ══════════════════════════════════════════
+       MOBILE — SCROLL-DRIVEN FRAME STACK
+       ══════════════════════════════════════════ */
+    .page-wrapper { width: 100%; position: relative; }
+
+    .scroll-wrapper { height: 300vh; position: relative; }
+
+    .sticky-stage {
+      position: sticky;
+      top: 0;
+      height: calc(100vh - 20px);
+      overflow: hidden;
+      margin-top: 40px;
+    }
+
+    .frame {
+      position: absolute; inset: 0; overflow: hidden;
+      border-radius: 0 0 40px 40px;
+    }
+    #frame1 { z-index: 3; bottom: 48px; }
+    #frame2 { z-index: 2; }
+    #frame3 { z-index: 1; }
+
+    .frame-bg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+    }
+
+    .frame-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.42);
+      pointer-events: none; will-change: opacity;
+    }
+
+    .frame-content {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; flex-direction: column;
+      padding: 110px 20px 0;
+    }
+
+    .trust-row { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; }
+    .trust-badge { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .trust-badge-img { width: 52px; height: 52px; border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.9); padding: 4px; }
+    .trust-badge-label { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; line-height: 1.4; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .trust-avatars-block { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+    .trust-avatars { display: flex; }
+    .trust-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; margin-right: -18px; border: 2px solid rgba(255,255,255,0.6); }
+    .trust-avatar:last-child { margin-right: 0; }
+    .trust-avatars-label { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; line-height: 1.4; text-align: right; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+    .hero-heading { font-size: 38px; font-weight: 500; line-height: 1.15; letter-spacing: -1.2px; color: #fff; margin-top: 20px; }
+
+    .word-slot-wrap { display: block; overflow: hidden; line-height: 1.15; }
+    .word-slot { display: inline-block; font-style: italic; font-weight: 700; color: #fff; transition: opacity 0.35s ease, transform 0.35s ease; }
+    .word-slot.fading-out { opacity: 0; transform: translateY(-100%); }
+    .word-slot.fading-in  { opacity: 0; transform: translateY(100%); }
+
+    .cta-pill {
+      display: inline-flex; align-items: center; gap: 28px;
+      background: #C33635; color: #fff; border: none; border-radius: 80px;
+      padding: 8px 8px 8px 22px; font-family: 'General Sans', sans-serif;
+      font-size: 15px; font-weight: 400; cursor: pointer; text-decoration: none;
+      flex-shrink: 0; align-self: flex-start;
+    }
+    .pill-arrow {
+      width: 38px; height: 38px; border: 1px solid rgba(255,255,255,0.6); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .pill-arrow svg { width: 16px; height: 16px; }
+    .frame-bottom-cta { position: absolute; bottom: 32px; left: 20px; transition: opacity 0.3s ease; }
+    #frame2 .frame-bottom-cta,
+    #frame3 .frame-bottom-cta { opacity: 0; }
+
+    .bottom-section { padding: 52px 24px 72px; text-align: center; }
+    .bottom-section p { font-size: 38px; font-weight: 500; line-height: 1.15; letter-spacing: -1.2px; color: #C33635; }
+
+    /* ══════════════════════════════════════════
+       DESKTOP  (≥1024px)
+       All measurements in vw based on 1440px design
+       1px in Figma = 100/1440 vw ≈ 0.06944vw
+       ══════════════════════════════════════════ */
+    .desktop-hero { display: none; }
+
+    @media (min-width: 768px) {
+
+      /* ── Header ── */
+      .navbar { padding: 14px 2.78vw; } /* 40px */
+      .nav-hamburger { display: none; }
+      .nav-links-desktop {
+        display: flex; align-items: center; gap: 2.22vw;
+        position: absolute; left: 50%; transform: translateX(-50%);
+      }
+      .nav-link-desktop { font-size: 1.04vw; font-weight: 400; color: #1A1A1A; text-decoration: none; }
+      .nav-link-desktop:hover { color: #C33635; }
+      .nav-lang {
+        display: inline-flex; align-items: center; gap: 4px;
+        font-size: 0.9vw; font-weight: 400; color: #1A1A1A;
+        border: 1px solid #D0D0D0; border-radius: 20px; padding: 4px 12px;
+        cursor: pointer; margin-right: 0.56vw;
+      }
+
+      /* ── Hide mobile, show desktop ── */
+      .page-wrapper { display: none; }
+      .bottom-section {
+        padding: 4.44vw 0;
+        text-align: center;
+      }
+      .bottom-section p {
+        font-family: 'General Sans', sans-serif;
+        font-size: 48px;
+        font-weight: 500;
+        line-height: 1.15;
+        letter-spacing: -1.2px;
+        color: #C33635;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+
+      /* ══════════════════════════════════
+         DESKTOP HERO
+         Canvas: 1440×840px
+         container-type: inline-size caps at 1440px so
+         all cqw values stay true to Figma proportions
+         at any viewport width.
+         ══════════════════════════════════ */
+      .desktop-hero {
+        display: block;
+        position: relative;
+        width: 100%;
+        max-width: 1440px;          /* cap at design width */
+        margin-left: auto;
+        margin-right: auto;
+        /* fills whatever remains after the fixed header */
+        height: calc(100vh - var(--header-h, 96px));
+        margin-top: var(--header-h, 96px);
+        overflow: hidden;
+        background: #000;
+        container-type: inline-size; /* enables cqw units below */
+      }
+
+      /* ── Panels ── */
+      .dh-panel {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      .dh-panel-img {
+        position: absolute;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        transform: scale(1);
+        transition: transform 0.9s cubic-bezier(0.76,0,0.24,1);
+      }
+      .dh-overlay {
+        position: absolute; inset: 0; z-index: 1;
+        background: rgba(0,0,0,0.6);
+        /* overlay fades out fast, fades in with a slight delay so slide leads */
+        transition: opacity 0.7s cubic-bezier(0.76,0,0.24,1) 0.08s;
+        pointer-events: none;
+      }
+
+      /* Menopause — full-bleed background */
+      .dh-meno {
+        left: -10cqw;           /* -144/1440 */
+        width: 111.18cqw;       /* 1601/1440 */
+        border-radius: 0 1.39cqw 1.39cqw 0; /* 0 20px 20px 0 */
+        z-index: 1;
+      }
+      .dh-meno .dh-panel-img { object-fit: contain; object-position: right top; }
+
+      /* Bladder — middle layer */
+      .dh-bladder {
+        left: 28.54cqw;         /* 411/1440 */
+        width: 51.18cqw;        /* 737/1440 */
+        border-radius: 0 2.78cqw 2.78cqw 0; /* 0 40px 40px 0 */
+        z-index: 2;
+        transition: left 0.7s cubic-bezier(0.76,0,0.24,1);
+      }
+      .dh-bladder .dh-panel-img { object-position: 70% top; }
+
+      /* UTI — front layer (widest, on top) */
+      .dh-uti {
+        left: -41.6cqw;         /* -599/1440 */
+        width: 101.18cqw;       /* 1457/1440 */
+        border-radius: 0 2.78cqw 2.78cqw 0;
+        z-index: 3;
+        transition: left 0.7s cubic-bezier(0.76,0,0.24,1);
+      }
+      .dh-uti .dh-panel-img { object-position: 50% 40%; }
+
+      /* ── State: UTI active (default) ── */
+      .state-uti .dh-uti .dh-overlay    { opacity: 0; }
+      .state-uti .dh-bladder .dh-overlay { opacity: 1; }
+      .state-uti .dh-meno .dh-overlay    { opacity: 1; }
+      .state-uti .dh-uti .dh-panel-img  { transform: scale(1.04); }
+
+      /* ── State: Bladder active ── */
+      .state-bladder .dh-uti    { left: -45.76cqw; } /* -659/1440 → right edge 55.42cqw */
+      .state-bladder .dh-uti .dh-overlay    { opacity: 1; }
+      .state-bladder .dh-bladder .dh-overlay { opacity: 0; }
+      .state-bladder .dh-meno .dh-overlay    { opacity: 1; }
+      .state-bladder .dh-bladder .dh-panel-img { transform: scale(1.04); }
+
+      /* ── State: Menopause active ── */
+      .state-menopause .dh-uti    { left: -45.76cqw; }
+      .state-menopause .dh-bladder { left: 24.31cqw; } /* shift left to reveal meno */
+      .state-menopause .dh-uti .dh-overlay    { opacity: 1; }
+      .state-menopause .dh-bladder .dh-overlay { opacity: 1; }
+      .state-menopause .dh-meno .dh-overlay    { opacity: 0; }
+      .state-menopause .dh-meno .dh-panel-img  { transform: scale(1.04); }
+
+      /* ── Hover zones (invisible, capture mouse) ── */
+      .dh-zones {
+        position: absolute; inset: 0; z-index: 5;
+        display: flex;
+      }
+      .dh-zone { cursor: pointer; height: 100%; }
+      .dh-zone-uti    { flex: 59.58; }  /* 858/1440 */
+      .dh-zone-bladder { flex: 20.14; } /* 290/1440 */
+      .dh-zone-meno   { flex: 20.28; } /* 292/1440 */
+
+      /* ── Content overlay (above everything) ── */
+      .dh-content {
+        position: absolute; inset: 0; z-index: 10;
+        pointer-events: none;
+      }
+
+      /* Doctor badges: top=54px from hero, left=40px */
+      .dh-badges {
+        position: absolute;
+        top: 6.43%;          /* 54/840 */
+        left: 2.78cqw;       /* 40/1440 */
+        display: flex;
+        align-items: center;
+        gap: 0px;
+      }
+      .dh-badge-imgs {
+        display: flex;
+        align-items: center;
+      }
+      .dh-badge-img {
+        width: 3.89cqw;  /* 56px */
+        height: 3.89cqw;
+        border-radius: 50%;
+        object-fit: contain;
+        margin-right: -1.39cqw; /* -20px overlap */
+        position: relative;
+      }
+      .dh-badge-img:last-child { margin-right: 0; }
+      .dh-badge-img:first-child { z-index: 2; }
+      .dh-badge-img:last-child  { z-index: 1; }
+
+      .dh-badge-text {
+        font-family: 'General Sans', sans-serif;
+        font-size: 0.76cqw;   /* 11px */
+        font-weight: 500;
+        letter-spacing: 0.035cqw; /* 0.5px */
+        text-transform: uppercase;
+        color: #fff;
+        line-height: 1.45;
+        margin-left: 1.25cqw; /* gap after badges */
+        max-width: 12.5cqw;   /* ~180px */
+      }
+
+      /* Heading: vertically centered in hero (top=50%) */
+      .dh-heading {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 2.78cqw;
+        width: 30cqw;      /* ~430px — fits "Take control of your" on one line */
+      }
+      .dh-heading-line {
+        font-family: 'General Sans', sans-serif;
+        font-size: clamp(24px, 3.33cqw, 48px);
+        font-weight: 500;
+        line-height: 1.1;
+        letter-spacing: -0.083cqw;
+        color: #fff;
+        display: block;
+      }
+      .dh-word-slot-wrap {
+        display: block;
+        overflow: hidden;
+        line-height: 1.1;
+      }
+      .dh-word-slot {
+        font-style: italic;
+        font-weight: 600;
+        display: inline-block;
+        transition: opacity 0.5s cubic-bezier(0.76,0,0.24,1), transform 0.5s cubic-bezier(0.76,0,0.24,1);
+      }
+      .dh-word-slot.dp-fading-out { opacity: 0; transform: translateY(-100%); }
+      .dh-word-slot.dp-fading-in  { opacity: 0; transform: translateY(100%); }
+
+      /* Social proof: top=685px from hero (81.55%) */
+      .dh-social {
+        position: absolute;
+        top: 81.55%;         /* 685/840 */
+        left: 2.78cqw;
+        display: flex;
+        align-items: center;
+        gap: 0.56cqw;
+      }
+      .dh-avatars {
+        display: flex;
+        align-items: center;
+        padding-right: 1.39cqw; /* compensate last overlap */
+      }
+      .dh-avatar {
+        width: 3.89cqw; height: 3.89cqw;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: -1.39cqw; /* -20px */
+        border: 2px solid rgba(255,255,255,0.5);
+      }
+      .dh-avatar:last-child { margin-right: 0; }
+      .dh-social-label {
+        font-family: 'General Sans', sans-serif;
+        font-size: 0.97cqw;   /* 14px */
+        font-weight: 500;
+        letter-spacing: 0.035cqw;
+        text-transform: uppercase;
+        color: #fff;
+        line-height: 1.14;
+      }
+
+      /* ── Buttons ── */
+      .dh-btn {
+        position: absolute;
+        top: 81.55%;
+        display: inline-flex;
+        align-items: center;
+        height: clamp(44px, 3.89cqw, 64px);
+        border-radius: 5.56cqw;
+        font-family: 'General Sans', sans-serif;
+        font-size: clamp(14px, 1.39cqw, 22px);
+        font-weight: 400;
+        color: #fff;
+        text-decoration: none;
+        white-space: nowrap;
+        cursor: pointer;
+        pointer-events: auto;
+        padding: 0.56cqw 0.56cqw 0.56cqw 2.22cqw;
+        gap: 0;
+        /* slide + background bleed in with slight delay */
+        transition:
+          left       0.7s  cubic-bezier(0.76,0,0.24,1),
+          background 0.55s cubic-bezier(0.76,0,0.24,1) 0.1s,
+          border-color 0.55s cubic-bezier(0.76,0,0.24,1) 0.1s,
+          box-shadow 0.55s cubic-bezier(0.76,0,0.24,1) 0.1s;
+        /* Default: outline */
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.6);
+        box-shadow: none;
+      }
+
+      /* Icon — always in DOM, animates in/out */
+      .dh-btn-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.5);
+        /* collapsed by default */
+        width: 0;
+        height: clamp(36px, 3.06cqw, 52px);
+        overflow: hidden;
+        opacity: 0;
+        transform: scale(0.6);
+        transition:
+          width   0.55s cubic-bezier(0.76,0,0.24,1) 0.05s,
+          opacity 0.45s cubic-bezier(0.76,0,0.24,1) 0.15s,
+          transform 0.55s cubic-bezier(0.76,0,0.24,1) 0.05s,
+          margin-left 0.55s cubic-bezier(0.76,0,0.24,1) 0.05s;
+        margin-left: 0;
+      }
+      .dh-btn-icon svg {
+        width: 1.11cqw; height: 1.11cqw;
+        flex-shrink: 0;
+        min-width: 16px;
+      }
+
+      /* Active button — red fill, icon expands */
+      .dh-btn.active {
+        background: #C33635;
+        border-color: transparent;
+        box-shadow: 0 4px 24px rgba(195,54,53,0.35);
+      }
+      .dh-btn.active .dh-btn-icon {
+        width: clamp(36px, 3.06cqw, 52px);
+        opacity: 1;
+        transform: scale(1);
+        margin-left: 0.97cqw; /* gap between text and icon */
+      }
+
+      /* ── Button positions — default (UTI active) ── */
+      .dh-btn-uti     { left: 42.64cqw; } /* 614/1440 */
+      .dh-btn-bladder { left: 63.96cqw; } /* 921/1440 */
+      .dh-btn-meno    { left: 82.78cqw; } /* 1192/1440 */
+
+      /* ── Bladder active: UTI panel shifts -4.16cqw, Bladder visible expands ── */
+      /* Buttons shift proportionally with their panel (Figma: 582px, 893px, 1192px) */
+      .state-bladder .dh-btn-uti     { left: 40.42cqw; } /* 582/1440 */
+      .state-bladder .dh-btn-bladder { left: 62.01cqw; } /* 893/1440 */
+      .state-bladder .dh-btn-meno    { left: 82.78cqw; }
+
+      /* ── Menopause active: UTI + Bladder both shift left, Meno expands ── */
+      .state-menopause .dh-btn-uti     { left: 38.19cqw; } /* UTI shifts same as bladder state */
+      .state-menopause .dh-btn-bladder { left: 57.64cqw; } /* Bladder shifts extra ~4cqw */
+      .state-menopause .dh-btn-meno    { left: 80.56cqw; } /* Meno button moves left slightly */
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="announcement-bar">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+      <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+    </svg>
+    Free shipping on all orders over $50
+    <button class="close-btn" onclick="this.parentElement.remove()">&times;</button>
+  </div>
+  <nav class="navbar" style="position:relative;">
+    <div class="nav-hamburger" aria-label="Menu"><span></span><span></span><span></span></div>
+    <a href="#" class="logo">utiva</a>
+
+    <!-- Desktop nav links -->
+    <div class="nav-links-desktop">
+      <a href="#" class="nav-link-desktop">Shop</a>
+      <a href="#" class="nav-link-desktop">About us</a>
+      <a href="#" class="nav-link-desktop">Learn</a>
+      <a href="#" class="nav-link-desktop">Quiz</a>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="nav-lang">En &#9660;</span>
+      <div class="nav-icons">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- ══════════════════════════════════════════
+     MOBILE — scroll-driven frame stack
+     ══════════════════════════════════════════ -->
+<div class="page-wrapper">
+  <div class="scroll-wrapper" id="scrollWrapper">
+    <div class="sticky-stage">
+
+      <!-- Frame 3: Menopause (back) -->
+      <div class="frame" id="frame3">
+        <img class="frame-bg" src="./assets/meno.jpg" alt="">
+        <div class="frame-overlay" id="overlay3"></div>
+        <div class="frame-content">
+          <div class="frame-bottom-cta">
+            <a href="#" class="cta-pill">Menopause Relief
+              <span class="pill-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Frame 2: Bladder (middle) -->
+      <div class="frame" id="frame2">
+        <img class="frame-bg" src="./assets/bladder.jpg" alt="">
+        <div class="frame-overlay" id="overlay2"></div>
+        <div class="frame-content">
+          <div class="frame-bottom-cta">
+            <a href="#" class="cta-pill">Bladder Control
+              <span class="pill-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Frame 1: UTI (front/hero) -->
+      <div class="frame" id="frame1">
+        <img class="frame-bg" src="./assets/uti.jpg" alt="">
+        <div class="frame-content">
+          <div class="trust-row">
+            <div class="trust-badge">
+              <img class="trust-badge-img" src="./assets/badge.png" alt="">
+              <span class="trust-badge-label">#1 Doctor<br>Recommended</span>
+            </div>
+            <div class="trust-avatars-block">
+              <div class="trust-avatars">
+                <img class="trust-avatar" src="./assets/avatar1.jpg" alt="">
+                <img class="trust-avatar" src="./assets/avatar2.jpg" alt="">
+                <img class="trust-avatar" src="./assets/avatar3.jpg" alt="">
+                <img class="trust-avatar" src="./assets/avatar4.jpg" alt="">
+              </div>
+              <span class="trust-avatars-label">100K+ Women<br>Trust Utiva</span>
+            </div>
+          </div>
+          <h1 class="hero-heading">
+            Take control of your<br>
+            <span class="word-slot-wrap"><span class="word-slot" id="wordSlot">confidence</span></span>
+          </h1>
+          <div class="frame-bottom-cta">
+            <a href="#" class="cta-pill">UTI Prevention
+              <span class="pill-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════
+     DESKTOP HERO
+     Three overlapping panels: Menopause (bg) | Bladder | UTI (front)
+     Content floats above all panels
+     ══════════════════════════════════════════ -->
+<div class="desktop-hero state-uti" id="desktopHero">
+
+  <!-- Panel: Menopause (full-bleed background) -->
+  <div class="dh-panel dh-meno">
+    <img class="dh-panel-img" src="./assets/meno.jpg" alt="">
+    <div class="dh-overlay"></div>
+  </div>
+
+  <!-- Panel: Bladder (middle layer) -->
+  <div class="dh-panel dh-bladder">
+    <img class="dh-panel-img" src="./assets/bladder.jpg" alt="">
+    <div class="dh-overlay"></div>
+  </div>
+
+  <!-- Panel: UTI (front, widest) -->
+  <div class="dh-panel dh-uti">
+    <img class="dh-panel-img" src="./assets/uti.jpg" alt="">
+    <div class="dh-overlay"></div>
+  </div>
+
+  <!-- Hover zones (capture mouse per panel area) -->
+  <div class="dh-zones">
+    <div class="dh-zone dh-zone-uti"     data-state="uti"></div>
+    <div class="dh-zone dh-zone-bladder" data-state="bladder"></div>
+    <div class="dh-zone dh-zone-meno"    data-state="menopause"></div>
+  </div>
+
+  <!-- Content overlay -->
+  <div class="dh-content">
+
+    <!-- Doctor badges (top-left) -->
+    <div class="dh-badges">
+      <div class="dh-badge-imgs">
+        <img class="dh-badge-img" src="./assets/badge.png" alt="">
+        <img class="dh-badge-img" src="./assets/badge.png" alt="">
+      </div>
+      <span class="dh-badge-text">#1 Doctor Recommended<br>UTI Prevention Brand</span>
+    </div>
+
+    <!-- Heading (vertically centered) -->
+    <div class="dh-heading">
+      <span class="dh-heading-line">Take control of your</span>
+      <span class="dh-heading-line dh-word-slot-wrap"><span class="dh-word-slot" id="dpWordSlot">confidence</span></span>
+    </div>
+
+    <!-- Social proof (bottom-left) -->
+    <div class="dh-social">
+      <div class="dh-avatars">
+        <img class="dh-avatar" src="./assets/avatar1.jpg" alt="">
+        <img class="dh-avatar" src="./assets/avatar2.jpg" alt="">
+        <img class="dh-avatar" src="./assets/avatar3.jpg" alt="">
+        <img class="dh-avatar" src="./assets/avatar4.jpg" alt="">
+      </div>
+      <span class="dh-social-label">100K+ Women Trust Utiva</span>
+    </div>
+
+    <!-- 3 Buttons (always visible) -->
+    <a href="#" class="dh-btn dh-btn-uti active" data-state="uti">
+      UTI Prevention
+      <span class="dh-btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </span>
+    </a>
+
+    <a href="#" class="dh-btn dh-btn-bladder" data-state="bladder">
+      Bladder Control
+      <span class="dh-btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </span>
+    </a>
+
+    <a href="#" class="dh-btn dh-btn-meno" data-state="menopause">
+      Menopause Relief
+      <span class="dh-btn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </span>
+    </a>
+
+  </div><!-- /dh-content -->
+</div><!-- /desktop-hero -->
+
+<!-- Bottom section (shown on both mobile and desktop) -->
+<div class="bottom-section">
+  <p>Better solutions for common women's health concerns.</p>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   MOBILE: SCROLL-DRIVEN ANIMATION
+   ══════════════════════════════════════════ */
+const wrapper  = document.getElementById('scrollWrapper');
+const frame1   = document.getElementById('frame1');
+const frame2   = document.getElementById('frame2');
+const overlay2 = document.getElementById('overlay2');
+const overlay3 = document.getElementById('overlay3');
+const cta1     = frame1.querySelector('.frame-bottom-cta');
+const cta2     = frame2.querySelector('.frame-bottom-cta');
+const cta3     = document.getElementById('frame3').querySelector('.frame-bottom-cta');
+const OVERLAY_START = 0.62;
+const PEEK = 48;
+
+function updateFrames() {
+  const scrollY = window.scrollY;
+  const vh      = window.innerHeight;
+  const wTop    = wrapper ? wrapper.offsetTop : 0;
+  const s       = Math.max(0, scrollY - wTop);
+
+  const p1 = Math.min(1, Math.max(0, s / vh));
+  frame1.style.transform   = `translateY(${(-p1 * 100).toFixed(2)}%)`;
+  // frame 2: fully dark when covered (p1=0), clear when revealed (p1=1)
+  overlay2.style.opacity   = Math.max(0, 1 - p1).toFixed(3);
+
+  const peekProgress = Math.max(0, Math.min(1, (p1 - 0.65) / 0.35));
+  frame2.style.bottom = (peekProgress * PEEK).toFixed(1) + 'px';
+
+  const p2 = Math.min(1, Math.max(0, (s - vh) / vh));
+  frame2.style.transform   = `translateY(${(-p2 * 100).toFixed(2)}%)`;
+  // frame 3: fully dark when covered (p2=0), clear when revealed (p2=1)
+  overlay3.style.opacity   = Math.max(0, 1 - p2).toFixed(3);
+
+  /* ── CTA button crossfade ── */
+  // Frame 1: fades out in the second half of its scroll
+  const cta1Opacity = Math.max(0, 1 - p1 / 0.6);
+  cta1.style.opacity = cta1Opacity.toFixed(3);
+
+  // Frame 2: starts fading IN at p1=0.4 (overlapping with frame 1), fades OUT with p2
+  const cta2In  = Math.max(0, Math.min(1, (p1 - 0.4) / 0.4));
+  const cta2Out = Math.max(0, 1 - p2 / 0.6);
+  cta2.style.opacity = (cta2In * cta2Out).toFixed(3);
+
+  // Frame 3: starts fading IN at p2=0.4 (overlapping with frame 2)
+  const cta3Opacity = Math.max(0, Math.min(1, (p2 - 0.4) / 0.4));
+  cta3.style.opacity = cta3Opacity.toFixed(3);
+}
+window.addEventListener('scroll', updateFrames, { passive: true });
+updateFrames();
+
+/* ══════════════════════════════════════════
+   MOBILE: WORD ROTATION
+   ══════════════════════════════════════════ */
+const WORDS = ['confidence', 'comfort', 'peace of mind'];
+let wordIndex = 0, isAnimating = false;
+
+function rotateWord() {
+  if (isAnimating) return;
+  isAnimating = true;
+  const slot = document.getElementById('wordSlot');
+  if (!slot) { isAnimating = false; return; }
+  slot.classList.add('fading-out');
+  setTimeout(() => {
+    slot.style.transition = 'none';
+    slot.classList.remove('fading-out');
+    slot.classList.add('fading-in');
+    wordIndex = (wordIndex + 1) % WORDS.length;
+    slot.textContent = WORDS[wordIndex];
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      slot.style.transition = '';
+      slot.classList.remove('fading-in');
+      isAnimating = false;
+    }));
+  }, 380);
+}
+setInterval(rotateWord, 3000);
+
+/* ══════════════════════════════════════════
+   HEADER HEIGHT SYNC
+   Measures the fixed header and sets --header-h so the
+   desktop hero always starts exactly where the header ends.
+   ══════════════════════════════════════════ */
+const siteHeader = document.querySelector('.site-header');
+function syncHeaderHeight() {
+  if (siteHeader) {
+    const h = siteHeader.offsetHeight;
+    document.documentElement.style.setProperty('--header-h', h + 'px');
+  }
+}
+syncHeaderHeight();
+window.addEventListener('resize', syncHeaderHeight);
+
+/* ══════════════════════════════════════════
+   DESKTOP: PANEL HOVER INTERACTION
+   ══════════════════════════════════════════ */
+const hero     = document.getElementById('desktopHero');
+const dpSlot   = document.getElementById('dpWordSlot');
+const allBtns  = document.querySelectorAll('.dh-btn');
+const PANEL_WORDS = { uti: 'confidence', bladder: 'comfort', menopause: 'peace of mind' };
+
+let dpTimer = null;
+let currentState = 'uti';
+
+function activatePanel(state) {
+  if (state === currentState) return;
+  currentState = state;
+
+  // Swap hero state class
+  hero.className = 'desktop-hero state-' + state;
+
+  // Swap button active class
+  allBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.state === state));
+
+  // Animate word
+  if (!dpSlot) return;
+  const newWord = PANEL_WORDS[state];
+  if (dpSlot.textContent === newWord) return;
+  clearTimeout(dpTimer);
+  dpSlot.style.transition = 'none';
+  dpSlot.classList.remove('dp-fading-out', 'dp-fading-in');
+  requestAnimationFrame(() => {
+    dpSlot.style.transition = '';
+    dpSlot.classList.add('dp-fading-out');
+    dpTimer = setTimeout(() => {
+      dpSlot.style.transition = 'none';
+      dpSlot.classList.remove('dp-fading-out');
+      dpSlot.classList.add('dp-fading-in');
+      dpSlot.textContent = newWord;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        dpSlot.style.transition = '';
+        dpSlot.classList.remove('dp-fading-in');
+      }));
+    }, 500);
+  });
+}
+
+// Zones trigger on hover
+document.querySelectorAll('.dh-zone').forEach(zone => {
+  zone.addEventListener('mouseenter', () => activatePanel(zone.dataset.state));
+});
+
+// Buttons also trigger (they sit above zones)
+allBtns.forEach(btn => {
+  btn.addEventListener('mouseenter', () => activatePanel(btn.dataset.state));
+});
+</script>
+
+</body>
+</html>
