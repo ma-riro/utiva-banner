@@ -113,9 +113,15 @@
     .hero-heading { font-size: 38px; font-weight: 500; line-height: 1.15; letter-spacing: -1.2px; color: #fff; margin-top: 20px; }
 
     .word-slot-wrap { display: block; overflow: hidden; line-height: 1.15; }
-    .word-slot { display: inline-block; font-style: italic; font-weight: 700; color: #fff; transition: opacity 0.35s ease, transform 0.35s ease; }
-    .word-slot.fading-out { opacity: 0; transform: translateY(-100%); }
-    .word-slot.fading-in  { opacity: 0; transform: translateY(100%); }
+    .word-slot {
+      display: inline-block; font-style: italic; font-weight: 700; color: #fff;
+      transition:
+        opacity   0.55s cubic-bezier(0.76,0,0.24,1),
+        transform 0.55s cubic-bezier(0.76,0,0.24,1),
+        filter    0.55s cubic-bezier(0.76,0,0.24,1);
+    }
+    .word-slot.fading-out { opacity: 0; transform: translateY(-65%); filter: blur(6px); }
+    .word-slot.fading-in  { opacity: 0; transform: translateY(65%);  filter: blur(6px); }
 
     .cta-pill {
       display: inline-flex; align-items: center; gap: 28px;
@@ -352,10 +358,13 @@
         font-style: italic;
         font-weight: 600;
         display: inline-block;
-        transition: opacity 0.5s cubic-bezier(0.76,0,0.24,1), transform 0.5s cubic-bezier(0.76,0,0.24,1);
+        transition:
+          opacity   0.6s cubic-bezier(0.76,0,0.24,1),
+          transform 0.6s cubic-bezier(0.76,0,0.24,1),
+          filter    0.6s cubic-bezier(0.76,0,0.24,1);
       }
-      .dh-word-slot.dp-fading-out { opacity: 0; transform: translateY(-100%); }
-      .dh-word-slot.dp-fading-in  { opacity: 0; transform: translateY(100%); }
+      .dh-word-slot.dp-fading-out { opacity: 0; transform: translateY(-65%); filter: blur(8px); }
+      .dh-word-slot.dp-fading-in  { opacity: 0; transform: translateY(65%);  filter: blur(8px); }
 
       /* Social proof: top=685px from hero (81.55%) */
       .dh-social {
@@ -747,6 +756,7 @@ function rotateWord() {
   const slot = document.getElementById('wordSlot');
   if (!slot) { isAnimating = false; return; }
   slot.classList.add('fading-out');
+  // Swap at 55% through the 550ms exit — new word enters while old is still leaving
   setTimeout(() => {
     slot.style.transition = 'none';
     slot.classList.remove('fading-out');
@@ -756,11 +766,11 @@ function rotateWord() {
     requestAnimationFrame(() => requestAnimationFrame(() => {
       slot.style.transition = '';
       slot.classList.remove('fading-in');
-      isAnimating = false;
+      setTimeout(() => { isAnimating = false; }, 620);
     }));
-  }, 380);
+  }, 300);
 }
-setInterval(rotateWord, 3000);
+setInterval(rotateWord, 3500);
 
 /* ══════════════════════════════════════════
    HEADER HEIGHT SYNC
@@ -808,6 +818,7 @@ function activatePanel(state) {
   requestAnimationFrame(() => {
     dpSlot.style.transition = '';
     dpSlot.classList.add('dp-fading-out');
+    // Swap at 55% through exit — overlap makes it feel continuous
     dpTimer = setTimeout(() => {
       dpSlot.style.transition = 'none';
       dpSlot.classList.remove('dp-fading-out');
@@ -817,7 +828,7 @@ function activatePanel(state) {
         dpSlot.style.transition = '';
         dpSlot.classList.remove('dp-fading-in');
       }));
-    }, 500);
+    }, 330);
   });
 }
 
