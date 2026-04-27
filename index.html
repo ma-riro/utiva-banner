@@ -96,12 +96,12 @@
 
     .frame-content {
       position: absolute; inset: 0; z-index: 2;
-      display: flex; flex-direction: column;
-      padding: 110px 20px 0;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 134px 20px 110px;
     }
 
     /* ── Mobile trust block ── */
-    .trust-block { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+    .trust-block { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 350px; max-width: 100%; }
     .trust-doctor-block { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 167px; }
     .trust-doctor-badges { display: flex; }
     .trust-badge-img { width: 44px; height: 44px; border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.9); padding: 3px; margin-right: -20px; }
@@ -117,7 +117,7 @@
     .trust-avatar:last-child { margin-right: 0; }
     .trust-social-label { font-size: 14px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; line-height: 16px; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
 
-    .hero-heading { font-size: 38px; font-weight: 500; line-height: 1.15; letter-spacing: -1.2px; color: #fff; margin-top: 20px; }
+    .hero-heading { font-size: 37px; font-weight: 500; line-height: 1.2; letter-spacing: -1.2px; color: #fff; margin-top: auto; margin-bottom: 24px; text-align: center; width: 100%; }
 
     .word-slot-wrap { display: block; overflow: hidden; line-height: 1.15; }
     .word-slot {
