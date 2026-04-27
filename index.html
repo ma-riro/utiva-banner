@@ -373,7 +373,7 @@
         left: 6.81cqw;       /* 98/1440 */
         display: flex;
         align-items: center;
-        gap: 0.56cqw;        /* 8px */
+        gap: 8px;
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         background: rgba(255,255,255,0.1);
@@ -383,13 +383,13 @@
       .dh-avatars {
         display: flex;
         align-items: center;
-        padding-right: 1.39cqw; /* compensate last overlap */
+        padding-right: 20px; /* compensate last avatar's -20px margin */
       }
       .dh-avatar {
         width: 3.33cqw; height: 3.33cqw; /* 48px */
         border-radius: 50%;
         object-fit: cover;
-        margin-right: -1.39cqw; /* -20px */
+        margin-right: -20px;
         border: 2px solid rgba(255,255,255,0.5);
       }
       .dh-avatar:last-child { margin-right: 0; }
