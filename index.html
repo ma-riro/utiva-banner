@@ -100,15 +100,22 @@
       padding: 110px 20px 0;
     }
 
-    .trust-row { display: flex; align-items: flex-start; justify-content: space-between; width: 100%; }
-    .trust-badge { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
-    .trust-badge-img { width: 52px; height: 52px; border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.9); padding: 4px; }
-    .trust-badge-label { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; line-height: 1.4; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
-    .trust-avatars-block { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-    .trust-avatars { display: flex; }
-    .trust-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; margin-right: -18px; border: 2px solid rgba(255,255,255,0.6); }
+    /* ── Mobile trust block ── */
+    .trust-block { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+    .trust-doctor-block { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 167px; }
+    .trust-doctor-badges { display: flex; }
+    .trust-badge-img { width: 44px; height: 44px; border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.9); padding: 3px; margin-right: -20px; }
+    .trust-badge-img:last-child { margin-right: 0; }
+    .trust-doctor-label { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; line-height: 1.4; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .trust-social-pill {
+      display: flex; align-items: center; gap: 8px;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.1); border-radius: 32px; padding: 8px 12px;
+    }
+    .trust-avatars { display: flex; padding-right: 20px; }
+    .trust-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; margin-right: -20px; border: 2px solid rgba(255,255,255,0.5); }
     .trust-avatar:last-child { margin-right: 0; }
-    .trust-avatars-label { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; line-height: 1.4; text-align: right; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+    .trust-social-label { font-size: 14px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; line-height: 16px; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
 
     .hero-heading { font-size: 38px; font-weight: 500; line-height: 1.15; letter-spacing: -1.2px; color: #fff; margin-top: 20px; }
 
@@ -541,7 +548,7 @@
 
       <!-- Frame 3: Menopause (back) -->
       <div class="frame" id="frame3">
-        <img class="frame-bg" src="./assets/meno.jpg" alt="">
+        <img class="frame-bg" src="./assets/mobile-meno.jpg" alt="">
         <div class="frame-overlay" id="overlay3"></div>
         <div class="frame-content">
           <div class="frame-bottom-cta">
@@ -569,19 +576,22 @@
       <div class="frame" id="frame1">
         <img class="frame-bg" src="./assets/uti.jpg" alt="">
         <div class="frame-content">
-          <div class="trust-row">
-            <div class="trust-badge">
-              <img class="trust-badge-img" src="./assets/badge.png" alt="">
-              <span class="trust-badge-label">#1 Doctor<br>Recommended</span>
+          <div class="trust-block">
+            <div class="trust-doctor-block">
+              <div class="trust-doctor-badges">
+                <img class="trust-badge-img" src="./assets/badge.png" alt="">
+                <img class="trust-badge-img" src="./assets/badge.png" alt="">
+              </div>
+              <span class="trust-doctor-label">#1 Doctor Recommended<br>UTI Prevention Brand</span>
             </div>
-            <div class="trust-avatars-block">
+            <div class="trust-social-pill">
               <div class="trust-avatars">
                 <img class="trust-avatar" src="./assets/avatar1.jpg" alt="">
                 <img class="trust-avatar" src="./assets/avatar2.jpg" alt="">
                 <img class="trust-avatar" src="./assets/avatar3.jpg" alt="">
                 <img class="trust-avatar" src="./assets/avatar4.jpg" alt="">
               </div>
-              <span class="trust-avatars-label">100K+ Women<br>Trust Utiva</span>
+              <span class="trust-social-label">100K+ Women<br>Trust Utiva†</span>
             </div>
           </div>
           <h1 class="hero-heading">
@@ -695,7 +705,7 @@
 
 <!-- Bottom section (shown on both mobile and desktop) -->
 <div class="bottom-section">
-  <p>Better solutions for common women's health concerns</p>
+  <p>Better solutions for common women's health concerns.</p>
 </div>
 
 <script>
